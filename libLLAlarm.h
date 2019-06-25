@@ -1,6 +1,15 @@
 #ifndef __LL_RELAYCON__
 #define __LL_RELAYCON__
 
+/* switch */
+#define DLLPORT_EXPORTS
+
+#ifdef DLLPORT_EXPORTS
+#define _DLL_PORT _declspec( dllexport )
+#else
+#define _DLL_PORT _declspec( dllimport )
+#endif
+
 /* definition */
 #define RET_ERR		(-1)
 #define RET_PASS	(1)
@@ -20,10 +29,10 @@ typedef enum _e_LL_Relay_State
 }e_LL_Relay_State;
 
 /* function declaration */
-int open(const char* serverIp, unsigned short commPort);
-int alarm(int id, unsigned short seconds);
-int stop(int id);
-int isalarm(int id);
-int close(void);
+_DLL_PORT int open(const char* serverIp, unsigned short commPort);
+_DLL_PORT int alarm(int id, unsigned short seconds);
+_DLL_PORT int stop(int id);
+_DLL_PORT int isalarm(int id);
+_DLL_PORT int close(void);
 
 #endif

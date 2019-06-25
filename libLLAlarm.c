@@ -38,7 +38,7 @@ const char relayTcpBack[6][20] = {
 };
 
 /* function declaration */
-int setRelayStatus(int id, int status);
+static int setRelayStatus(int id, int status);
 void CALLBACK timerCallbackOne(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime);
 void CALLBACK timerCallbackTwo(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime);
 void CALLBACK timerCallbackThree(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime);
@@ -47,7 +47,7 @@ void CALLBACK timerCallbackThree(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTi
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-int open(const char* serverIp, unsigned short commPort)
+_DLL_PORT int open(const char* serverIp, unsigned short commPort)
 {
 	WORD socket_version;
 	WSADATA wsadata;
@@ -84,7 +84,7 @@ int open(const char* serverIp, unsigned short commPort)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-int alarm(int id, unsigned short seconds)
+_DLL_PORT int alarm(int id, unsigned short seconds)
 {
 	int status = RET_ERR;
 
@@ -120,7 +120,7 @@ int alarm(int id, unsigned short seconds)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-int isalarm(int id)
+_DLL_PORT int isalarm(int id)
 {
 	if (LL_RELAY_ON == relayState[id])
 	{
@@ -134,7 +134,7 @@ int isalarm(int id)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-int stop(int id)
+_DLL_PORT int stop(int id)
 {
 	int status = RET_ERR;
 
@@ -151,7 +151,7 @@ int stop(int id)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-int close(void)
+_DLL_PORT int close(void)
 {
 	closesocket(socketClient);
 	WSACleanup();
@@ -206,7 +206,7 @@ void CALLBACK timerCallbackThree(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTi
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-int setRelayStatus(int id, int status)
+static int setRelayStatus(int id, int status)
 {
 	unsigned int len = 0;
 	unsigned int ret = 0;
