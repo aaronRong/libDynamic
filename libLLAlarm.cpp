@@ -19,7 +19,7 @@ static SOCKET socketClient;
 static struct sockaddr_in serverIn;
 static unsigned int relayState[4] = { LL_RELAY_OFF , LL_RELAY_OFF , LL_RELAY_OFF };
 
-const char relayTcp[6][20] = {
+const char relayTcp[6][25] = {
 	"relay one on",
 	"relay one off",
 	"relay two on",
@@ -28,7 +28,7 @@ const char relayTcp[6][20] = {
 	"relay three off",
 };
 
-const char relayTcpBack[6][20] = {
+const char relayTcpBack[6][25] = {
 	"relay one on done",
 	"relay one off done",
 	"relay two on done",
@@ -47,7 +47,7 @@ void CALLBACK timerCallbackThree(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTi
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-_DLL_PORT int open(const char* serverIp, unsigned short commPort)
+extern "C" _DLL_PORT int open(const char* serverIp, unsigned short commPort)
 {
 	WORD socket_version;
 	WSADATA wsadata;
@@ -84,7 +84,7 @@ _DLL_PORT int open(const char* serverIp, unsigned short commPort)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-_DLL_PORT int alarm(int id, unsigned short seconds)
+extern "C" _DLL_PORT int alarm(int id, unsigned short seconds)
 {
 	int status = RET_ERR;
 
@@ -120,7 +120,7 @@ _DLL_PORT int alarm(int id, unsigned short seconds)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-_DLL_PORT int isalarm(int id)
+extern "C" _DLL_PORT int isalarm(int id)
 {
 	if (LL_RELAY_ON == relayState[id])
 	{
@@ -134,7 +134,7 @@ _DLL_PORT int isalarm(int id)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-_DLL_PORT int stop(int id)
+extern "C" _DLL_PORT int stop(int id)
 {
 	int status = RET_ERR;
 
@@ -151,7 +151,7 @@ _DLL_PORT int stop(int id)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-_DLL_PORT int close(void)
+extern "C" _DLL_PORT int close(void)
 {
 	closesocket(socketClient);
 	WSACleanup();
@@ -210,7 +210,7 @@ static int setRelayStatus(int id, int status)
 {
 	unsigned int len = 0;
 	unsigned int ret = 0;
-	unsigned char recvBuf[30];
+	char recvBuf[30];
 
 	assert((id >= MIN_ID_INDEX) && (id <= MAX_ID_INDEX));
 	assert((status == LL_RELAY_ON) || (status == LL_RELAY_OFF));

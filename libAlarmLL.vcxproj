@@ -160,7 +160,7 @@
     <ClInclude Include="libLLAlarm.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="libLLAlarm.c">
+    <ClCompile Include="libLLAlarm.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
