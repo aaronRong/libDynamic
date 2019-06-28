@@ -10,11 +10,12 @@
 #define MAX_RECV_LEN			(30UL)
 #define MIN_ID_INDEX			(0UL)
 #define MAX_ID_INDEX			(2UL)
-#define RELAY_ONE_TIMER_ID		(0UL)
-#define RELAY_TWO_TIMER_ID		(0UL)
-#define RELAY_THREE_TIMER_ID	(0UL)
+#define RELAY_ONE_TIMER_ID		(50UL)
+#define RELAY_TWO_TIMER_ID		(51UL)
+#define RELAY_THREE_TIMER_ID	(52UL)
 
 /* global varaible */
+unsigned short seconds[3];
 static SOCKET socketClient;
 static struct sockaddr_in serverIn;
 static unsigned int relayState[4] = { LL_RELAY_OFF , LL_RELAY_OFF , LL_RELAY_OFF };
@@ -39,9 +40,9 @@ const char relayTcpBack[6][25] = {
 
 /* function declaration */
 static int setRelayStatus(int id, int status);
-void CALLBACK timerCallbackOne(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime);
-void CALLBACK timerCallbackTwo(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime);
-void CALLBACK timerCallbackThree(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime);
+static DWORD WINAPI timerCallbackOne(void* lpParam);
+static DWORD WINAPI timerCallbackTwo(void* lpParam);
+static DWORD WINAPI timerCallbackThree(void* lpParam);
 
 /*
 * Author Name: aaron.gao
@@ -51,6 +52,7 @@ extern "C" _DLL_PORT int open(const char* serverIp, unsigned short commPort)
 {
 	WORD socket_version;
 	WSADATA wsadata;
+
 	socket_version = MAKEWORD(2, 2);			/* call different winsock version */
 	if (WSAStartup(socket_version, &wsadata) != 0)
 	{
@@ -84,9 +86,10 @@ extern "C" _DLL_PORT int open(const char* serverIp, unsigned short commPort)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-extern "C" _DLL_PORT int alarm(int id, unsigned short seconds)
+extern "C" _DLL_PORT int alarm(int id, unsigned short timerSec)
 {
 	int status = RET_ERR;
+	seconds[id] = timerSec;
 
 	assert((id >= MIN_ID_INDEX) && (id <= MAX_ID_INDEX));
 
@@ -100,13 +103,16 @@ extern "C" _DLL_PORT int alarm(int id, unsigned short seconds)
 	switch (id)
 	{
 	case LL_RELAY_ONE:
-		SetTimer(NULL, RELAY_ONE_TIMER_ID, seconds * 1000, timerCallbackOne);
+		//SetTimer(NULL, RELAY_ONE_TIMER_ID, seconds * 1000, timerCallbackOne);
+		CreateThread(NULL, 0, timerCallbackOne, (void*)(&seconds[id]), 0, NULL);
 		break;
 	case LL_RELAY_TWO:
-		SetTimer(NULL, RELAY_TWO_TIMER_ID, seconds * 1000, timerCallbackTwo);
+		//SetTimer(NULL, RELAY_TWO_TIMER_ID, seconds * 1000, timerCallbackTwo);
+		CreateThread(NULL, 0, timerCallbackTwo, (void*)(&seconds[id]), 0, NULL);
 		break;
 	case LL_RELAY_THREE:
-		SetTimer(NULL, RELAY_THREE_TIMER_ID, seconds * 1000, timerCallbackThree);
+		//SetTimer(NULL, RELAY_THREE_TIMER_ID, seconds * 1000, timerCallbackThree);
+		CreateThread(NULL, 0, timerCallbackThree, (void*)(&seconds[id]), 0, NULL);
 		break;
 	}
 
@@ -163,43 +169,62 @@ extern "C" _DLL_PORT int close(void)
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-void CALLBACK timerCallbackOne(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime)
+static DWORD WINAPI timerCallbackOne(void* lpParam)
 {
 	int status = RET_ERR;
 
-	KillTimer(NULL, nTimerid);
+	unsigned short seconds = *(unsigned short*)lpParam;
+
+	for (int i = 0; i < seconds; i++)
+	{
+		Sleep(1000);
+	}
 
 	status = setRelayStatus(LL_RELAY_ONE, LL_RELAY_OFF);
 
 	relayState[LL_RELAY_ONE] = LL_RELAY_OFF;
+
+	return 0;
 }
 /*
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-void CALLBACK timerCallbackTwo(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime)
+static DWORD WINAPI timerCallbackTwo(void* lpParam)
 {
 	int status = RET_ERR;
+	unsigned short seconds = *(unsigned short*)lpParam;
 
-	KillTimer(NULL, nTimerid);
+	for (int i = 0; i < seconds; i++)
+	{
+		Sleep(1000);
+	}
 
-	status = setRelayStatus(LL_RELAY_ONE, LL_RELAY_OFF);
+	status = setRelayStatus(LL_RELAY_TWO, LL_RELAY_OFF);
 
 	relayState[LL_RELAY_TWO] = LL_RELAY_OFF;
+
+	return 0;
 }
 /*
 * Author Name: aaron.gao
 * Time: 2019.6.25
 */
-void CALLBACK timerCallbackThree(HWND hWnd, UINT nMsg, UINT nTimerid, DWORD dwTime)
+static DWORD WINAPI timerCallbackThree(void* lpParam)
 {
 	int status = RET_ERR;
+	unsigned short seconds = *(unsigned short*)lpParam;
 
-	KillTimer(NULL, nTimerid);
+	for (int i = 0; i < seconds; i++)
+	{
+		Sleep(1000);
+	}
 
-	status = setRelayStatus(LL_RELAY_ONE, LL_RELAY_OFF);
+	status = setRelayStatus(LL_RELAY_THREE, LL_RELAY_OFF);
 
 	relayState[LL_RELAY_THREE] = LL_RELAY_OFF;
+
+	return 0;
 }
 
 /*
