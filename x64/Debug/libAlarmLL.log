@@ -1,0 +1,5 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(452,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (libDynamicAlarm.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  libLLAlarm.cpp
+E:\01.github\libAlarmLL\libLLAlarm.cpp(243,90): warning C4267:  'argument': conversion from 'size_t' to 'int', possible loss of data
+     Creating library E:\01.github\pc-socket-vs\x64\Debug\libLLAlarm.lib and object E:\01.github\pc-socket-vs\x64\Debug\libLLAlarm.exp
+  libAlarmLL.vcxproj -> E:\01.github\pc-socket-vs\x64\Debug\libLLAlarm.dll
